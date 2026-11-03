@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 4 Lesson 2: What day is it today?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Projector-first classroom tool: a fixed step rail on the left, one large working stage on the right. Light theme only, for projectors. */
+  --paper:#F2F4F9; --card:#FFFFFF; --ink:#18213D; --muted:#566079; --line:#D6DCE9;
+  --accent:#2952E3; --accent-soft:#E5EBFD; --glow:#FFC531; --glow-soft:#FFF3CC;
+  --b:#0B8C7C; --b-soft:#DCF2EE; --good:#1C9A55; --good-soft:#DFF3E7; --bad:#CF3B3B; --bad-soft:#FBE3E3;
+  --display:"Lexend", "Segoe UI", system-ui, sans-serif;
+  --learn:"Andika", "Lexend", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--display);font-size:18px;line-height:1.45}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--glow);outline-offset:2px}
+.learn{font-family:var(--learn)}
+h1,h2,h3{text-wrap:balance;margin:0}
+.app{display:grid;grid-template-columns:268px 1fr;grid-template-rows:auto 1fr;height:100%}
+
+/* Top bar */
+header{grid-column:1/-1;display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--ink);color:#fff;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;line-height:1.2;margin-right:auto;min-width:0}
+.brand small{color:#AFC0F5;font-size:13px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.brand strong{font-size:20px;font-weight:600}
+.hbtn{background:transparent;border:1.5px solid #3B4770;color:#fff;border-radius:10px;padding:7px 12px;font-size:15px;font-weight:500}
+.hbtn:hover{background:#26305A}
+.hbtn.backlink{text-decoration:none;white-space:nowrap}
+.hbtn[aria-pressed="true"]{background:var(--glow);color:var(--ink);border-color:var(--glow)}
+.timer{display:flex;align-items:center;gap:6px;background:#0F1630;border-radius:12px;padding:4px 6px 4px 12px}
+.timer .tm{font-variant-numeric:tabular-nums;font-size:24px;font-weight:600;min-width:72px}
+.timer.low .tm{color:var(--glow)}
+.timer.over .tm{color:#FF8A8A}
+select.hbtn{max-width:170px}
+select.hbtn option{color:var(--ink)}
+
+/* Step rail */
+nav{background:var(--card);border-right:1px solid var(--line);overflow:auto;padding:16px 12px;display:flex;flex-direction:column;gap:18px}
+.steps{display:flex;flex-direction:column;gap:4px;list-style:none;margin:0;padding:0}
+.step{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;border-radius:12px;padding:9px 10px;font-size:16px}
+.step .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--paper);border:1.5px solid var(--line);font-weight:600;font-size:14px}
+.step .m{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.step:hover{background:var(--paper)}
+.step.done .n{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.step.cur{background:var(--accent-soft);font-weight:600}
+.step.cur .n{background:var(--accent);border-color:var(--accent);color:#fff}
+.goals h3{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 8px 6px}
+.goals ul{margin:0;padding:0 6px 0 24px;font-size:15px;color:var(--ink);display:grid;gap:6px}
+.total{font-size:14px;color:var(--muted);padding:0 8px}
+
+/* Stage */
+main{overflow:auto;padding:24px clamp(16px,3vw,40px) 40px;display:flex;flex-direction:column;gap:22px}
+.sec-head .eyebrow{font-size:14px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.sec-head h1{font-size:clamp(28px,3.2vw,40px);font-weight:600;margin-top:2px}
+.sec-head .sub{color:var(--muted);margin:6px 0 0;max-width:65ch}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.panel > h2{font-size:20px;font-weight:600;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--card);border-radius:12px;padding:9px 16px;font-weight:600;font-size:16px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:#1E43C7}
+.btn.small{padding:6px 12px;font-size:14px}
+.btn.icon{padding:8px;border-radius:50%}
+.btn[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{border:0;background:var(--card);padding:7px 14px;font-weight:600;font-size:14px}
+.seg button + button{border-left:2px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.say-flash{animation:flash .5s}
+@keyframes flash{0%{box-shadow:0 0 0 0 var(--glow)}50%{box-shadow:0 0 0 6px var(--glow)}100%{box-shadow:0 0 0 0 transparent}}
+.foot{display:flex;justify-content:space-between;gap:12px;margin-top:auto;padding-top:8px}
+.tnote{display:none;background:var(--glow-soft);border:1.5px dashed #E2B12A;border-radius:14px;padding:14px 18px}
+.notes-on .tnote{display:block}
+.tnote h3{font-size:14px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.tnote ul{margin:0;padding-left:20px;display:grid;gap:4px;font-size:16px}
+
+/* Flashcards */
+.fc-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.fc{width:min(560px,100%);aspect-ratio:3/2;background:var(--card);border:2px solid var(--line);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;user-select:none;box-shadow:0 6px 0 var(--line)}
+.fc.flipped{border-color:var(--accent);box-shadow:0 6px 0 var(--accent-soft)}
+.fc .pic{font-size:clamp(80px,12vw,140px);line-height:1}
+.fc .pic.digit{font-family:var(--learn);font-weight:700;color:var(--accent)}
+.fc .word{font-family:var(--learn);font-size:clamp(36px,5vw,60px);font-weight:700}
+.fc .hint{color:var(--muted);font-size:15px}
+.fc-meta{display:flex;gap:10px;align-items:center;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Phrases */
+.phr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.phr{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.phr .emo{font-size:46px;line-height:1}
+.phr-text{font-size:28px;font-weight:700;line-height:1.2;flex:1}
+.spot{position:fixed;inset:0;background:rgba(17,24,48,.72);display:grid;place-items:center;z-index:20;padding:20px}
+.spot-card{background:var(--card);border-radius:28px;padding:36px clamp(20px,4vw,56px);width:min(900px,100%);display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center}
+.spot-card .emo{font-size:110px;line-height:1}
+.spot-card .txt{font-family:var(--learn);font-weight:700;font-size:clamp(40px,6vw,76px);line-height:1.1}
+.drill{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.drill button{border:2px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 16px;font-weight:600;font-size:16px}
+.drill button .k{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--line);margin-right:6px;font-size:13px}
+.drill button[aria-pressed="true"]{background:var(--glow);border-color:var(--glow)}
+.drill button[aria-pressed="true"] .k{background:var(--ink);color:#fff}
+
+/* Dialogue */
+.dlg{display:flex;flex-direction:column;gap:10px}
+.line{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;border-radius:16px;padding:10px 12px 10px 10px;border:1.5px solid transparent}
+.line.who-A{background:var(--accent-soft)}
+.line.who-B{background:var(--b-soft);margin-left:clamp(0px,6vw,80px)}
+.line.playing{border-color:var(--glow);box-shadow:0 0 0 3px var(--glow-soft)}
+.badge{display:flex;flex-direction:column;align-items:center;min-width:64px;font-size:13px;color:var(--muted);font-weight:600}
+.badge b{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:16px}
+.who-A .badge b{background:var(--accent)}
+.who-B .badge b{background:var(--b)}
+.ltext{font-size:clamp(22px,2.4vw,30px);font-weight:700}
+.blank{color:#9AA3BC;letter-spacing:2px;font-weight:400}
+
+/* Phonics */
+.letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.letter{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.letter:hover{border-color:var(--accent)}
+.letter .big{font-family:var(--learn);font-size:76px;font-weight:700;line-height:1}
+.letter .big.pair{font-size:56px;line-height:1.36}
+.letter .big span{color:var(--accent)}
+.letter .snd{font-size:20px;font-weight:600;color:var(--b)}
+.letter .kw{font-size:24px;font-family:var(--learn);font-weight:700}
+.letter .hint{font-size:14px;color:var(--muted)}
+.bl-stage{display:flex;gap:12px;justify-content:center;margin:18px 0}
+.bl-box{width:clamp(80px,10vw,120px);aspect-ratio:1;border-radius:20px;border:3px solid var(--line);display:grid;place-items:center;font-family:var(--learn);font-size:clamp(56px,7vw,84px);font-weight:700;background:var(--card);transition:background .2s,border-color .2s,transform .2s}
+.bl-box.lit{background:var(--glow);border-color:var(--glow);transform:translateY(-6px)}
+.bl-box.all{background:var(--accent-soft);border-color:var(--accent)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:6px 16px;font-family:var(--learn);font-weight:700;font-size:20px}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.dict{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.dict-item{border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dict-item .ans{font-family:var(--learn);font-size:34px;font-weight:700;min-width:60px;text-align:center}
+.dict-item .ans.hidden{color:#B8C0D6}
+
+/* Vocabulary */
+.vgroup + .vgroup{margin-top:18px}
+.vgroup h3{font-size:16px;color:var(--muted);font-weight:600;margin-bottom:10px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.vc{border:2px solid var(--line);background:var(--card);border-radius:18px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.vc:hover{border-color:var(--accent)}
+.vc .pic{font-size:52px;line-height:1.1}
+.vc .pic.long{font-size:34px;line-height:1.55}
+.fc .pic.long{font-size:clamp(64px,9vw,112px)}
+.vc .pic.digit{font-family:var(--learn);font-weight:700;color:var(--accent)}
+.vc .vw{font-family:var(--learn);font-size:24px;font-weight:700}
+.hide-words .vc .vw{visibility:hidden}
+.vc.target{border-color:var(--good);background:var(--good-soft);box-shadow:0 0 0 4px var(--good-soft)}
+.quizbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--glow-soft);border-radius:14px;padding:10px 14px;margin-bottom:14px}
+.pattern + .pattern{margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.sentence{font-family:var(--learn);font-size:clamp(32px,4.4vw,56px);font-weight:700;margin:4px 0 14px}
+.slot{display:inline-block;min-width:3.5em;border-bottom:4px solid var(--accent);color:var(--accent);text-align:center;padding:0 .15em}
+.addname{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.addname input{border:2px solid var(--line);border-radius:12px;padding:8px 12px;font-size:17px;min-width:220px}
+.sight{display:flex;gap:12px;flex-wrap:wrap}
+.sight button{border:2px solid var(--b);background:var(--b-soft);border-radius:14px;padding:8px 22px;font-family:var(--learn);font-size:34px;font-weight:700}
+
+/* Role play */
+.rp-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:18px;align-items:start}
+.scene{display:flex;gap:16px;align-items:center;margin-bottom:6px}
+.scene .emo{font-size:56px}
+.rp-steps{margin:0;padding-left:22px;display:grid;gap:6px;font-size:18px}
+.tags{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.tag{border:2px solid var(--ink);border-radius:12px;overflow:hidden;text-align:center}
+.tag .t1{background:var(--bad);color:#fff;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px}
+.tag .t2{font-family:var(--learn);font-size:26px;font-weight:700;padding:8px 4px}
+
+/* Read & write */
+.reading{display:grid;gap:14px}
+.rline{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.rline .num{width:32px;height:32px;border-radius:50%;background:var(--paper);border:1.5px solid var(--line);display:grid;place-items:center;font-size:14px;font-weight:600;flex:none}
+.words{font-family:var(--learn);font-size:clamp(30px,3.6vw,46px);font-weight:700;flex:1;min-width:0}
+.word{border:0;background:transparent;font:inherit;padding:0 .08em;border-radius:8px}
+.word:hover{background:var(--glow-soft)}
+.model{font-family:var(--learn);font-size:clamp(40px,5.6vw,72px);font-weight:400;display:inline-block;border-bottom:3px solid var(--accent);line-height:1.15;margin:4px 0 14px}
+.frame-line{font-family:var(--learn);font-size:clamp(26px,3vw,38px);font-weight:700;margin:6px 0}
+.pad-wrap{border:2px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;margin-top:12px}
+#pad{display:block;width:100%;touch-action:none;cursor:crosshair}
+
+/* Wrap-up */
+.cando{display:grid;gap:10px;list-style:none;margin:0;padding:0}
+.cando button{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:2px solid var(--line);background:var(--card);border-radius:14px;padding:12px 14px;font-size:20px;font-weight:500}
+.cando .box{width:30px;height:30px;border-radius:8px;border:2.5px solid var(--muted);flex:none;display:grid;place-items:center;color:#fff;font-weight:700}
+.cando button[aria-pressed="true"]{border-color:var(--good);background:var(--good-soft)}
+.cando button[aria-pressed="true"] .box{background:var(--good);border-color:var(--good)}
+.exq{border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;gap:10px}
+.exq + .exq{margin-top:12px}
+.exq .qh{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:600}
+.exq .qn{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:14px;flex:none}
+.opts{display:flex;gap:10px;flex-wrap:wrap}
+.opt{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:10px 18px;font-family:var(--learn);font-size:24px;font-weight:700}
+.opt.right{background:var(--good-soft);border-color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.score{font-variant-numeric:tabular-nums;font-weight:600}
+.home{columns:2 220px;margin:0;padding-left:22px;font-family:var(--learn);font-size:21px;font-weight:700}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;align-items:start}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:16px;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}
+  nav{border-right:0;border-bottom:1px solid var(--line);padding:8px}
+  .steps{flex-direction:row;overflow-x:auto}
+  .step{grid-template-columns:30px auto;white-space:nowrap}
+  .step .m,.goals,.total{display:none}
+  .rp-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header>
+    <a class="hbtn backlink" id="homelink" href="../index.html" hidden>◀ All lessons</a>
+    <div class="brand"><small id="kicker"></small><strong id="ltitle"></strong></div>
+    <div class="timer" id="timer" aria-label="Step timer">
+      <span class="tm" id="tm">10:00</span>
+      <button class="hbtn" data-act="t-toggle" id="tbtn">Start</button>
+      <button class="hbtn" data-act="t-plus" aria-label="Add one minute">+1</button>
+      <button class="hbtn" data-act="t-reset">Reset</button>
+    </div>
+    <button class="hbtn" data-act="speed" id="speedbtn" aria-pressed="false">Slow voice</button>
+    <select class="hbtn" id="voice" aria-label="Voice" hidden></select>
+    <button class="hbtn" data-act="notes" id="notesbtn" aria-pressed="false">Teacher notes</button>
+    <button class="hbtn" data-act="fs">Full screen</button>
+  </header>
+  <nav aria-label="Lesson steps">
+    <ul class="steps" id="steps"></ul>
+    <div class="total" id="total"></div>
+    <div class="goals"><h3>By the end, students can</h3><ul id="goals"></ul></div>
+  </nav>
+  <main id="main" tabindex="-1"></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const D = {"slug": "w4-l2", "kicker": "Level 0 · Week 4 · Lesson 2", "title": "What day is it today?", "goals": ["Say the 7 days", "Say the 12 months", "Ask “What day is it today?”", "Say “See you on ___.”", "Know the sounds x, y, z, qu"], "review": {"title": "Review: Lesson 1", "sub": "Telling the time.", "cards": [{"pic": "🙋", "word": "Excuse me."}, {"pic": "🕒", "word": "What time is it?"}, {"pic": "7:00", "digit": true, "word": "seven o'clock", "say": "It's seven o'clock."}, {"pic": "3:30", "digit": true, "word": "half past three", "say": "It's half past three."}, {"pic": "12:00", "digit": true, "word": "twelve o'clock", "say": "It's twelve o'clock."}, {"pic": "9:30", "digit": true, "word": "half past nine", "say": "It's half past nine."}, {"pic": "⏰", "word": "clock"}, {"pic": "☀️", "word": "morning"}, {"pic": "🧃", "word": "juice"}, {"pic": "🚐", "word": "van"}, {"pic": "🕸️", "word": "web"}], "notes": ["Show a time on the paper clock; students ask and answer.", "Ask the real time now."]}, "phrases": {"title": "What day is it today?", "sub": "Days, and saying goodbye until next time.", "items": [{"pic": "📅", "word": "What day is it today?"}, {"pic": "🗓️", "word": "It's ___.", "say": "It's Monday."}, {"pic": "👋", "word": "See you on ___.", "say": "See you on Friday."}, {"pic": "➡️", "word": "See you tomorrow."}, {"pic": "🎂", "word": "My birthday is in ___.", "say": "My birthday is in May."}], "dialogue": {"roles": {"A": "Teacher", "B": "Student"}, "lines": [{"who": "A", "text": "What day is it today?"}, {"who": "B", "text": "It's Tuesday."}, {"who": "A", "text": "Good. Our next class is on Thursday."}, {"who": "B", "text": "OK. See you on Thursday!"}, {"who": "A", "text": "See you on Thursday!"}]}, "notes": ["Start every lesson from today with “What day is it today?”", "Days and months start with a capital letter. Show it on a calendar."]}, "phonics": {"title": "Sounds: x, y, z, qu", "sub": "The last letters of the alphabet. Now we know all 26.", "letters": [{"l": "x", "up": "X", "sound": "/ks/", "word": "box", "emoji": "📦", "hint": "two sounds: k + s, at the end"}, {"l": "y", "up": "Y", "sound": "/y/", "word": "yo-yo", "emoji": "🪀", "hint": "like the start of “yes”"}, {"l": "z", "up": "Z", "sound": "/z/", "word": "zebra", "emoji": "🦓", "hint": "like s, with voice: zzz"}, {"l": "qu", "up": "Qu", "sound": "/kw/", "word": "queen", "emoji": "👸", "hint": "q always comes with u"}], "blend": ["box", "fox", "six", "mix", "yes", "yet", "zip", "zap", "quiz", "quit", "yum", "next"], "dictation": {"title": "Listen and write the word", "items": [{"say": "six", "answer": "six"}, {"say": "yes", "answer": "yes"}, {"say": "zip", "answer": "zip"}, {"say": "quiz", "answer": "quiz"}]}, "notes": ["x usually comes at the end of short words: box, six, fox.", "z vs s: hand on throat. z buzzes.", "Celebrate: students now know a sound for every letter."]}, "vocab": {"title": "Days and months", "sub": "The week and the year.", "groups": [{"title": "Days", "items": [{"pic": "Mon", "digit": true, "word": "Monday"}, {"pic": "Tue", "digit": true, "word": "Tuesday"}, {"pic": "Wed", "digit": true, "word": "Wednesday"}, {"pic": "Thu", "digit": true, "word": "Thursday"}, {"pic": "Fri", "digit": true, "word": "Friday"}, {"pic": "Sat", "digit": true, "word": "Saturday"}, {"pic": "Sun", "digit": true, "word": "Sunday"}]}, {"title": "Months", "items": [{"pic": "Jan", "digit": true, "word": "January"}, {"pic": "Feb", "digit": true, "word": "February"}, {"pic": "Mar", "digit": true, "word": "March"}, {"pic": "Apr", "digit": true, "word": "April"}, {"pic": "May", "digit": true, "word": "May"}, {"pic": "Jun", "digit": true, "word": "June"}, {"pic": "Jul", "digit": true, "word": "July"}, {"pic": "Aug", "digit": true, "word": "August"}, {"pic": "Sep", "digit": true, "word": "September"}, {"pic": "Oct", "digit": true, "word": "October"}, {"pic": "Nov", "digit": true, "word": "November"}, {"pic": "Dec", "digit": true, "word": "December"}]}, {"title": "Time words", "items": [{"pic": "📅", "word": "today"}, {"pic": "➡️", "word": "tomorrow"}, {"pic": "🗓️", "word": "week"}, {"pic": "🎉", "word": "weekend"}]}], "patterns": [{"before": "See you on", "after": ".", "options": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]}, {"before": "My birthday is in", "after": ".", "options": ["January", "May", "August", "November"]}], "sight": ["day", "today", "see", "on", "in"], "notes": ["Say the days in order together, then backwards.", "Birthday line: students stand in order of their birthday month.", "on Monday, in May. Just show it."]}, "roleplay": {"title": "Making a plan", "emoji": "🗓️", "sub": "Choose a day to meet.", "setting": "Planning to meet", "roles": {"A": "Friend 1", "B": "Friend 2"}, "steps": ["Each student has a week planner with two busy days.", "A suggests a day.", "B says yes or no.", "Find a free day for both.", "Say “See you on ___.”"], "lines": [{"who": "A", "text": "Coffee on Monday?"}, {"who": "B", "text": "Sorry, no. I work on Monday."}, {"who": "A", "text": "Wednesday?"}, {"who": "B", "text": "Yes! Wednesday at ten o'clock?"}, {"who": "A", "text": "OK. See you on Wednesday!"}, {"who": "B", "text": "See you!"}], "names": [], "notes": ["Make simple planners: 7 days, with two days crossed out for each student.", "“I work on Monday” is new. Model it and let students copy it."]}, "readwrite": {"title": "Read: Ana's week", "sub": "Days in a short text.", "read": ["Today is Monday.", "I work on Tuesday.", "My class is on Thursday.", "See you on Saturday!"], "copy": "Today is Monday.", "frame": ["Today is ________.", "My class is on ________.", "My birthday is in ________."], "notes": ["Questions: “When is Ana's class?” “Does she work on Tuesday?”", "Check capital letters on days and months."]}, "wrapup": {"title": "What did we learn?", "sub": "What day is it today? When is our next class?", "cando": ["I can say the 7 days.", "I can say the 12 months.", "I can ask “What day is it today?”", "I can say “See you on ___.”", "I know the sounds x, y, z, qu."], "exit": [{"prompt": "Listen. Which day?", "say": "Thursday", "options": ["Tue", "Thu", "Sat"], "answer": 1}, {"prompt": "Which month comes after March?", "options": ["May", "April", "February"], "answer": 1}, {"prompt": "Listen. Which word?", "say": "six", "options": ["sit", "six", "sick"], "answer": 1}], "home": ["What day is it today?", "It's ___.", "See you on ___.", "See you tomorrow.", "The 7 days and 12 months", "Sounds: x, y, z, qu"], "notes": ["Next lesson has the mid-level check. Tell students to review Weeks 1–4."]}, "home": "index.html"};
+const STEPS = [
+  {id:'review', label:'Review', min:10},
+  {id:'phrases', label:'New phrases', min:15},
+  {id:'phonics', label:'Phonics', min:10},
+  {id:'vocabulary', label:'Words & pattern', min:15},
+  {id:'roleplay', label:'Role play', min:10},
+  {id:'readwrite', label:'Read & write', min:8},
+  {id:'wrapup', label:'Wrap-up', min:2}
+];
+if (D.minutes) STEPS.forEach(st => { if (D.minutes[st.id]) st.min = D.minutes[st.id]; });
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SPK = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+let cur = 0;
+const visited = new Set();
+
+/* ---------- Speech ---------- */
+const S = {voices:[], voice:null, voiceB:null, slow:false};
+let playTok = 0;
+function initVoices(){
+  if (!('speechSynthesis' in window)) { $('#voice').style.display = 'none'; return; }
+  const vs = speechSynthesis.getVoices().filter(v => /^en([-_]|$)/i.test(v.lang));
+  if (!vs.length) return;
+  S.voices = vs;
+  let saved = null; try { saved = localStorage.getItem('l0-voice'); } catch(e) {}
+  const pref = ['en-NZ','en-GB','en-AU','en-US'];
+  S.voice = vs.find(v => v.name === saved) || pref.map(p => vs.find(v => v.lang.replace('_','-') === p)).find(Boolean) || vs[0];
+  pickB();
+  $('#voice').hidden = false;
+  $('#voice').innerHTML = vs.map(v => `<option value="${esc(v.name)}" ${v === S.voice ? 'selected' : ''}>${esc(v.name.replace(/Microsoft |Google /,''))} (${esc(v.lang)})</option>`).join('');
+}
+function pickB(){
+  const same = S.voices.filter(v => v !== S.voice && v.lang === S.voice.lang);
+  S.voiceB = same[0] || S.voices.find(v => v !== S.voice) || S.voice;
+}
+if ('speechSynthesis' in window) { initVoices(); speechSynthesis.onvoiceschanged = initVoices; }
+$('#voice').addEventListener('change', e => {
+  S.voice = S.voices.find(v => v.name === e.target.value) || S.voice; pickB();
+  try { localStorage.setItem('l0-voice', S.voice.name); } catch(err) {}
+  speak('Hello. My name is Anna.');
+});
+function speak(text, opt = {}){
+  if (!('speechSynthesis' in window)) { toast('This browser cannot play audio. Please read it aloud.'); opt.onend && opt.onend(); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const v = opt.voice || S.voice;
+  if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+  u.rate = opt.rate || (S.slow ? 0.6 : 0.85);
+  if (opt.onend) u.onend = opt.onend;
+  speechSynthesis.speak(u);
+}
+
+/* ---------- Toast ---------- */
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
+
+/* ---------- Timer ---------- */
+const T = {left: STEPS[0].min * 60, run:false, id:null};
+function drawTimer(){
+  const m = Math.floor(Math.max(T.left,0) / 60), s = Math.max(T.left,0) % 60;
+  $('#tm').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  $('#timer').className = 'timer' + (T.left <= 0 ? ' over' : T.left <= 60 ? ' low' : '');
+  $('#tbtn').textContent = T.run ? 'Pause' : 'Start';
+}
+function tick(){ if (!T.run) return; T.left--; if (T.left <= 0) { T.left = 0; T.run = false; clearInterval(T.id); toast('Time is up for this step.'); } drawTimer(); }
+function resetTimer(){ T.run = false; clearInterval(T.id); T.left = STEPS[cur].min * 60; drawTimer(); }
+
+/* ---------- Shared pieces ---------- */
+function head(title, sub){
+  const st = STEPS[cur];
+  return `<div class="sec-head"><div class="eyebrow">Step ${cur+1} of 7 · ${st.label} · ${st.min} min</div><h1>${esc(title)}</h1>${sub ? `<p class="sub">${esc(sub)}</p>` : ''}</div>`;
+}
+function tnote(lines){ return lines && lines.length ? `<aside class="tnote"><h3>Teacher notes</h3><ul>${lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul></aside>` : ''; }
+function foot(){
+  return `<div class="foot">${cur > 0 ? `<button class="btn" data-act="prev">◀ ${esc(STEPS[cur-1].label)}</button>` : '<span></span>'}${cur < STEPS.length-1 ? `<button class="btn primary" data-act="next">${esc(STEPS[cur+1].label)} ▶</button>` : '<span></span>'}</div>`;
+}
+const blanks = t => t.replace(/[A-Za-z’'.,?!]+/g, w => `<span class="blank">${'_'.repeat(Math.max(2, w.replace(/[^A-Za-z]/g,'').length))}</span>`);
+function promptOnly(t){ const parts = t.split(' '); return esc(parts[0]) + (parts.length > 1 ? ' ' + blanks(parts.slice(1).join(' ')) : ''); }
+
+const DLG = {phr:'show', rp:'show'};
+function dlgLines(key){ return key === 'phr' ? D.phrases.dialogue : D.roleplay; }
+function dialogue(key){
+  const src = dlgLines(key), mode = DLG[key];
+  const modes = key === 'phr'
+    ? [['show','Show all'],['hideA','Hide A'],['hideB','Hide B']]
+    : [['show','Full script'],['prompts','First words only'],['hidden','No script']];
+  return `<div class="row" style="justify-content:space-between;margin-bottom:12px"><div class="seg" role="group" aria-label="Script view">${modes.map(([m,l]) => `<button data-act="dlg-mode" data-key="${key}" data-mode="${m}" aria-pressed="${mode===m}">${l}</button>`).join('')}</div><button class="btn primary" data-act="play-all" data-key="${key}">${SPK} Play the conversation</button></div>
+  <div class="dlg">${src.lines.map((l,i) => {
+    const hide = mode === 'hidden' || (mode === 'hideA' && l.who === 'A') || (mode === 'hideB' && l.who === 'B');
+    const txt = hide ? blanks(l.text) : mode === 'prompts' ? promptOnly(l.text) : esc(l.text);
+    return `<div class="line who-${l.who}" id="${key}-l${i}"><span class="badge"><b>${l.who}</b>${esc(src.roles[l.who])}</span><span class="ltext learn">${txt}</span><button class="btn icon" data-say="${esc(l.say || l.text)}" data-who="${l.who}" aria-label="Listen to this line">${SPK}</button></div>`;
+  }).join('')}</div>`;
+}
+function playAll(key){
+  const lines = dlgLines(key).lines; const tok = ++playTok; let i = 0;
+  const step = () => {
+    $$('.line.playing').forEach(x => x.classList.remove('playing'));
+    if (tok !== playTok || i >= lines.length) return;
+    const el = document.getElementById(`${key}-l${i}`); el && el.classList.add('playing');
+    const l = lines[i++];
+    speak(l.say || l.text, {voice: l.who === 'B' ? S.voiceB : S.voice, onend: () => setTimeout(step, 600)});
+  };
+  step();
+}
+
+/* ---------- 1 Review: flashcards ---------- */
+const FC = {order: D.review.cards.map((_,i) => i), i:0, flipped:false, wordFirst:false};
+function pic(c, cls=''){ const long = c.digit && String(c.pic).length > 3; return `<span class="pic ${c.digit ? 'digit' : ''} ${long ? 'long' : ''} ${cls}">${esc(c.pic)}</span>`; }
+function rReview(){
+  const r = D.review, c = r.cards[FC.order[FC.i]];
+  const front = FC.wordFirst ? `<span class="word">${esc(c.word)}</span><span class="hint">Tap to see the picture</span>` : `${pic(c)}<span class="hint">What is it? Tap to check.</span>`;
+  const back = `${pic(c)}<span class="word">${esc(c.word)}</span>`;
+  return head(r.title, r.sub) + `<div class="panel fc-wrap">
+    <div class="fc ${FC.flipped ? 'flipped' : ''}" data-act="flip" role="button" tabindex="0" aria-label="Flip card">${FC.flipped ? back : front}</div>
+    <div class="row" style="justify-content:center">
+      <button class="btn" data-act="fc-prev">◀ Back</button>
+      <button class="btn" data-act="flip">Flip</button>
+      <button class="btn primary" data-say="${esc(c.say || c.word)}">${SPK} Listen</button>
+      <button class="btn" data-act="fc-next">Next ▶</button>
+    </div>
+    <div class="fc-meta"><span>Card ${FC.i+1} of ${r.cards.length}</span><button class="btn small" data-act="fc-shuffle">Shuffle</button><button class="btn small" data-act="fc-mode">${FC.wordFirst ? 'Show picture first' : 'Show word first'}</button></div>
+  </div>` + tnote(r.notes);
+}
+
+/* ---------- 2 Phrases ---------- */
+const PH = {spot:null, drill:0};
+const DRILL = ['Listen','Say it together','Say it alone','Ask a partner'];
+function rPhrases(){
+  const p = D.phrases;
+  let html = head(p.title, p.sub) + `<div class="phr-grid">${p.items.map((it,i) => `<div class="phr"><div class="emo" aria-hidden="true">${it.emoji}</div><div class="phr-text learn">${esc(it.text)}</div><div class="row"><button class="btn primary" data-say="${esc(it.say || it.text)}">${SPK} Listen</button><button class="btn" data-act="spot" data-i="${i}">Practise</button></div></div>`).join('')}</div>
+  <div class="panel"><h2>Conversation</h2>${dialogue('phr')}</div>` + tnote(p.notes);
+  if (PH.spot !== null) {
+    const it = p.items[PH.spot];
+    html += `<div class="spot" data-act="spot-bg"><div class="spot-card" role="dialog" aria-modal="true" aria-label="Practise phrase">
+      <div class="emo" aria-hidden="true">${it.emoji}</div><div class="txt">${esc(it.text)}</div>
+      <div class="row" style="justify-content:center"><button class="btn primary" data-say="${esc(it.say || it.text)}">${SPK} Listen</button><button class="btn" data-act="say-slow" data-text="${esc(it.say || it.text)}">Listen slowly</button></div>
+      <div class="drill" role="group" aria-label="Practice stage">${DRILL.map((d,i) => `<button data-act="drill" data-i="${i}" aria-pressed="${PH.drill===i}"><span class="k">${i+1}</span>${d}</button>`).join('')}</div>
+      <div class="row" style="justify-content:center">${PH.spot > 0 ? '<button class="btn" data-act="spot-prev">◀ Previous phrase</button>' : ''}${PH.spot < p.items.length-1 ? '<button class="btn" data-act="spot-next">Next phrase ▶</button>' : ''}<button class="btn" data-act="spot-close">Close</button></div>
+    </div></div>`;
+  }
+  return html;
+}
+
+/* ---------- 3 Phonics ---------- */
+const BL = {w:0, t:null};
+const DI = {show:false};
+function rPhonics(){
+  const ph = D.phonics, w = ph.blend[BL.w];
+  return head(ph.title, ph.sub) + `<div class="letters">${ph.letters.map(x => `<button class="letter" data-say="${esc(x.word)}"><span class="big ${x.l.length > 1 ? 'pair' : ''}">${esc(x.up)}<span>${esc(x.l)}</span></span><span class="snd">${esc(x.sound)}</span><span class="kw"><span aria-hidden="true">${x.emoji}</span> ${esc(x.word)}</span><span class="hint">${esc(x.hint)}</span></button>`).join('')}</div>
+  <div class="panel"><h2>Blend the sounds</h2>
+    <div class="chips" role="group" aria-label="Choose a word">${ph.blend.map((b,i) => `<button class="chip" data-act="bl-pick" data-i="${i}" aria-pressed="${BL.w===i}">${esc(b)}</button>`).join('')}</div>
+    <div class="bl-stage" aria-live="polite">${[...w].map(ch => `<span class="bl-box">${esc(ch)}</span>`).join('')}</div>
+    <div class="row" style="justify-content:center"><button class="btn primary" data-act="bl-go">Sound it out</button><button class="btn" data-say="${esc(w)}">${SPK} Hear the word</button><button class="btn" data-act="bl-rand">Random word</button></div>
+  </div>
+  <div class="panel"><h2>${esc(ph.dictation.title)}</h2>
+    <div class="dict">${ph.dictation.items.map((d,i) => `<div class="dict-item"><button class="btn" data-act="say-slow" data-text="${esc(d.say)}">${SPK} ${i+1}</button><span class="ans ${DI.show ? '' : 'hidden'}">${DI.show ? esc(d.answer) : '?'}</span></div>`).join('')}</div>
+    <div class="row" style="margin-top:14px"><button class="btn" data-act="di-show" aria-pressed="${DI.show}">${DI.show ? 'Hide answers' : 'Show answers'}</button></div>
+  </div>` + tnote(ph.notes);
+}
+function blendGo(){
+  const w = D.phonics.blend[BL.w]; const boxes = $$('.bl-box'); let i = 0; clearTimeout(BL.t);
+  boxes.forEach(b => b.classList.remove('lit','all'));
+  const run = () => {
+    if (i < boxes.length) { boxes.forEach(b => b.classList.remove('lit')); boxes[i].classList.add('lit'); i++; BL.t = setTimeout(run, 1100); }
+    else { boxes.forEach(b => { b.classList.remove('lit'); b.classList.add('all'); }); speak(w); }
+  };
+  run();
+}
+
+/* ---------- 4 Vocabulary & pattern ---------- */
+const VQ = {on:false, target:null, shown:false, hide:false};
+const PT = D.vocab.patterns.map(() => ({sel:0, extra:[]}));
+const optText = o => o == null ? '' : typeof o === 'string' ? o : o.text;
+const optSay = o => o == null ? '' : typeof o === 'string' ? o : (o.say || o.text);
+function allVocab(){ const out = []; D.vocab.groups.forEach((g,gi) => g.items.forEach((it,ii) => out.push({id:`${gi}-${ii}`, it}))); return out; }
+function rVocab(){
+  const v = D.vocab;
+  const quiz = VQ.on ? `<div class="quizbar"><strong>Listen and point.</strong><span>Which one did you hear?</span><button class="btn small" data-act="vq-again">${SPK} Hear again</button><button class="btn small" data-act="vq-reveal">Show answer</button><button class="btn small primary" data-act="vq-next">Next word</button><button class="btn small" data-act="vq-stop">Stop</button></div>` : '';
+  return head(v.title, v.sub) + `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:14px"><h2 style="margin:0">Words</h2><div class="row"><button class="btn" data-act="vq-start">${SPK} Listen and point</button><button class="btn" data-act="vc-hide" aria-pressed="${VQ.hide}">${VQ.hide ? 'Show words' : 'Hide words'}</button></div></div>${quiz}
+  <div class="${VQ.hide ? 'hide-words' : ''}">${v.groups.map((g,gi) => `<div class="vgroup"><h3>${esc(g.title)}</h3><div class="vgrid">${g.items.map((it,ii) => `<button class="vc ${VQ.shown && VQ.target === `${gi}-${ii}` ? 'target' : ''}" data-say="${esc(it.say || it.word)}">${pic(it)}<span class="vw">${esc(it.word)}</span></button>`).join('')}</div></div>`).join('')}</div></div>
+  <div class="panel"><h2>Sentence pattern</h2>${v.patterns.map((p,pi) => {
+    const opts = p.options.concat(PT[pi].extra), selO = opts[PT[pi].sel], sel = optText(selO);
+    const sentence = `${p.before} ${optSay(selO)}${p.after}`;
+    return `<div class="pattern"><div class="sentence">${esc(p.before)} <span class="slot">${esc(sel) || '&nbsp;'}</span>${esc(p.after)}</div>
+    <div class="row"><button class="btn primary" data-say="${esc(sentence)}">${SPK} Listen</button><div class="chips">${opts.map((o,i) => `<button class="chip" data-act="pt-pick" data-p="${pi}" data-i="${i}" aria-pressed="${PT[pi].sel===i}">${esc(optText(o))}</button>`).join('')}</div></div>
+    ${p.add ? `<form class="addname" data-p="${pi}"><label class="sr" for="add-${pi}" style="position:absolute;left:-9999px">${esc(p.add)}</label><input id="add-${pi}" placeholder="${esc(p.add)}" autocomplete="off"><button class="btn" type="submit">Add</button></form>` : ''}</div>`;
+  }).join('')}</div>
+  <div class="panel"><h2>Sight words: read these on sight</h2><div class="sight">${v.sight.map(w => `<button data-say="${esc(w)}">${esc(w)}</button>`).join('')}</div></div>` + tnote(v.notes);
+}
+function vqNew(){ const all = allVocab(); let pick; do { pick = all[Math.floor(Math.random() * all.length)]; } while (all.length > 1 && pick.id === VQ.target); VQ.on = true; VQ.target = pick.id; VQ.shown = false; render(); speak(pick.it.say || pick.it.word); }
+function vqItem(){ return allVocab().find(x => x.id === VQ.target); }
+
+/* ---------- 5 Role play ---------- */
+const RP = {names: D.roleplay.names.slice()};
+function rRole(){
+  const r = D.roleplay;
+  return head(r.title, r.sub) + `<div class="rp-grid">
+    <div class="panel"><h2>Script</h2>${dialogue('rp')}</div>
+    <div style="display:grid;gap:18px">
+      <div class="panel"><div class="scene"><span class="emo" aria-hidden="true">${r.emoji}</span><div><h2 style="margin:0">${esc(r.setting)}</h2><div style="color:var(--muted)">A: ${esc(r.roles.A)} · B: ${esc(r.roles.B)}</div></div></div><ol class="rp-steps">${r.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></div>
+      ${r.names && r.names.length ? `<div class="panel"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Name tags</h2><button class="btn small" data-act="names-shuffle">Shuffle</button></div><div class="tags">${RP.names.map(n => `<div class="tag"><div class="t1">Hello, my name is</div><div class="t2">${esc(n)}</div></div>`).join('')}</div></div>` : ''}
+    </div></div>` + tnote(r.notes);
+}
+
+/* ---------- 6 Read & write ---------- */
+function rRead(){
+  const r = D.readwrite;
+  const wordBtns = s => s.split(' ').map(w => { const clean = w.replace(/[^A-Za-z’']/g,''); return clean ? `<button class="word" data-say="${esc(clean)}">${esc(w)}</button>` : `<span>${esc(w)}</span>`; }).join(' ');
+  return head(r.title, r.sub) + `<div class="panel"><h2>Read</h2><div class="reading">${r.read.map((s,i) => `<div class="rline"><span class="num">${i+1}</span><div class="words">${wordBtns(s)}</div><button class="btn icon" data-say="${esc(s)}" aria-label="Listen to sentence ${i+1}">${SPK}</button></div>`).join('')}</div><p style="color:var(--muted);margin:14px 0 0">Tap any word to hear it.</p></div>
+  <div class="two">
+    <div class="panel"><h2>Copy</h2><div class="model">${esc(r.copy)}</div><div style="color:var(--muted)">Students copy this into their books, starting on the line.</div></div>
+    <div class="panel"><h2>Write about you</h2>${r.frame.map(f => `<div class="frame-line">${esc(f)}</div>`).join('')}</div>
+  </div>
+  <div class="panel"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Writing board</h2><div class="row"><button class="btn" data-act="pad-trace">Show “${esc(r.copy)}” to trace</button><button class="btn" data-act="pad-clear">Clear</button></div></div><div class="pad-wrap"><canvas id="pad" aria-label="Writing board. Draw with a finger, pen or mouse."></canvas></div></div>` + tnote(r.notes);
+}
+const PAD = {};
+function initPad(){
+  const c = $('#pad'); if (!c) return;
+  const w = c.parentElement.clientWidth, h = 250, dpr = window.devicePixelRatio || 1;
+  c.width = w * dpr; c.height = h * dpr; c.style.height = h + 'px';
+  const ctx = c.getContext('2d'); ctx.scale(dpr, dpr);
+  Object.assign(PAD, {ctx, w, h}); guides();
+  let down = false, last = null;
+  const pt = e => { const r = c.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; };
+  c.onpointerdown = e => { down = true; last = pt(e); c.setPointerCapture(e.pointerId); };
+  c.onpointermove = e => { if (!down) return; const p = pt(e); ctx.strokeStyle = '#18213D'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p; };
+  c.onpointerup = c.onpointercancel = () => { down = false; };
+}
+function guides(){
+  const {ctx, w, h} = PAD; if (!ctx) return;
+  ctx.clearRect(0, 0, w, h);
+  [[55,'#C9D1E6',[]],[110,'#C9D1E6',[10,8]],[165,'#2952E3',[]],[220,'#C9D1E6',[]]].forEach(([y,col,dash]) => { ctx.setLineDash(dash); ctx.strokeStyle = col; ctx.lineWidth = y === 165 ? 2 : 1.5; ctx.beginPath(); ctx.moveTo(16, y); ctx.lineTo(w - 16, y); ctx.stroke(); });
+  ctx.setLineDash([]);
+}
+function trace(){
+  const {ctx, w} = PAD; if (!ctx) return; guides();
+  let size = 104; ctx.font = `400 ${size}px Andika, sans-serif`;
+  const tw = ctx.measureText(D.readwrite.copy).width; if (tw > w - 60) { size = size * (w - 60) / tw; ctx.font = `400 ${size}px Andika, sans-serif`; }
+  ctx.fillStyle = '#D3D9E8'; ctx.fillText(D.readwrite.copy, 30, 165);
+}
+
+/* ---------- 7 Wrap-up ---------- */
+const CD = new Set();
+const EX = {};
+function rWrap(){
+  const r = D.wrapup;
+  const right = r.exit.filter((q,i) => EX[i] === q.answer).length, done = Object.keys(EX).length;
+  return head(r.title, r.sub) + `<div class="two">
+    <div class="panel"><h2>Today I can…</h2><ul class="cando">${r.cando.map((c,i) => `<li><button data-act="cd" data-i="${i}" aria-pressed="${CD.has(i)}"><span class="box">${CD.has(i) ? '✓' : ''}</span>${esc(c)}</button></li>`).join('')}</ul></div>
+    <div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:12px"><h2 style="margin:0">${esc(r.exitTitle || 'Exit ticket')}</h2><span class="score">${right} / ${r.exit.length} correct${done ? '' : ''}</span></div>
+      ${r.exit.map((q,qi) => `<div class="exq"><div class="qh"><span class="qn">${qi+1}</span><span>${esc(q.prompt)}</span>${q.say ? `<button class="btn icon" data-act="say-slow" data-text="${esc(q.say)}" aria-label="Listen">${SPK}</button>` : ''}</div>
+        <div class="opts">${q.options.map((o,oi) => { const cls = EX[qi] === undefined ? '' : oi === q.answer && EX[qi] === oi ? 'right' : EX[qi] === oi ? 'wrong' : ''; return `<button class="opt ${cls}" data-act="ex" data-q="${qi}" data-o="${oi}">${esc(o)}</button>`; }).join('')}</div></div>`).join('')}
+      <div class="row" style="margin-top:12px"><button class="btn small" data-act="ex-reset">Start again</button></div>
+    </div></div>
+  <div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">Home review: 10 minutes a day</h2><button class="btn small" data-act="copy-home">Copy list</button></div><ul class="home">${r.home.map(h => `<li>${esc(h)}</li>`).join('')}</ul></div>` + tnote(r.notes);
+}
+
+/* ---------- Render ---------- */
+const R = {review:rReview, phrases:rPhrases, phonics:rPhonics, vocabulary:rVocab, roleplay:rRole, readwrite:rRead, wrapup:rWrap};
+function renderNav(){
+  $('#steps').innerHTML = STEPS.map((s,i) => `<li><button class="step ${i===cur ? 'cur' : visited.has(i) && i < cur ? 'done' : ''}" data-act="go" data-i="${i}" ${i===cur ? 'aria-current="step"' : ''}><span class="n">${i < cur && visited.has(i) ? '✓' : i+1}</span><span>${s.label}</span><span class="m">${s.min} min</span></button></li>`).join('');
+}
+function render(){
+  renderNav();
+  const main = $('#main'), top = main.scrollTop;
+  main.innerHTML = R[STEPS[cur].id]() + foot();
+  main.scrollTop = top;
+  if (STEPS[cur].id === 'readwrite') initPad();
+}
+function go(i){
+  if (i < 0 || i >= STEPS.length) return;
+  cur = i; visited.add(i); PH.spot = null; VQ.on = false; VQ.shown = false; ++playTok;
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  resetTimer(); render(); $('#main').scrollTop = 0;
+  if (location.hash !== '#' + STEPS[i].id) history.replaceState(null, '', '#' + STEPS[i].id);
+}
+
+/* ---------- Events ---------- */
+document.addEventListener('click', e => {
+  const act = e.target.closest('[data-act]');
+  if (act && !(act.dataset.act === 'spot-bg' && e.target !== act)) { handle(act.dataset.act, act); return; }
+  const say = e.target.closest('[data-say]');
+  if (say) { ++playTok; say.classList.remove('say-flash'); void say.offsetWidth; say.classList.add('say-flash'); speak(say.dataset.say, {voice: say.dataset.who === 'B' ? S.voiceB : S.voice}); }
+});
+document.addEventListener('submit', e => {
+  const f = e.target.closest('.addname'); if (!f) return; e.preventDefault();
+  const v = f.querySelector('input').value.trim(); if (!v) return;
+  const pi = +f.dataset.p; PT[pi].extra.push(v); PT[pi].sel = D.vocab.patterns[pi].options.length + PT[pi].extra.length - 1; render();
+  const inp = document.getElementById('add-' + pi); inp && inp.focus();
+});
+function handle(a, el){
+  const i = +el.dataset.i;
+  switch (a) {
+    case 'go': go(i); break;
+    case 'prev': go(cur - 1); break;
+    case 'next': go(cur + 1); break;
+    case 't-toggle': T.run = !T.run; clearInterval(T.id); if (T.run) { if (T.left <= 0) T.left = STEPS[cur].min * 60; T.id = setInterval(tick, 1000); } drawTimer(); break;
+    case 't-plus': T.left += 60; drawTimer(); break;
+    case 't-reset': resetTimer(); break;
+    case 'speed': S.slow = !S.slow; el.setAttribute('aria-pressed', S.slow); toast(S.slow ? 'Slow voice is on.' : 'Normal speed.'); break;
+    case 'notes': { const on = document.body.classList.toggle('notes-on'); el.setAttribute('aria-pressed', on); break; }
+    case 'fs': try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => toast('Full screen is blocked here. Use the browser’s full-screen key (F11).')); } catch(err) { toast('Full screen is blocked here. Use the browser’s full-screen key (F11).'); } break;
+    case 'say-slow': ++playTok; speak(el.dataset.text, {rate:0.55}); break;
+    case 'flip': FC.flipped = !FC.flipped; render(); if (FC.flipped) { const c = D.review.cards[FC.order[FC.i]]; speak(c.say || c.word); } break;
+    case 'fc-next': FC.i = (FC.i + 1) % FC.order.length; FC.flipped = false; render(); break;
+    case 'fc-prev': FC.i = (FC.i - 1 + FC.order.length) % FC.order.length; FC.flipped = false; render(); break;
+    case 'fc-shuffle': FC.order = shuffle(FC.order); FC.i = 0; FC.flipped = false; render(); toast('Cards shuffled.'); break;
+    case 'fc-mode': FC.wordFirst = !FC.wordFirst; FC.flipped = false; render(); break;
+    case 'spot': PH.spot = i; PH.drill = 0; render(); break;
+    case 'spot-next': PH.spot = Math.min(PH.spot + 1, D.phrases.items.length - 1); PH.drill = 0; render(); break;
+    case 'spot-prev': PH.spot = Math.max(PH.spot - 1, 0); PH.drill = 0; render(); break;
+    case 'spot-close': case 'spot-bg': PH.spot = null; render(); break;
+    case 'drill': PH.drill = i; render(); if (i === 0) { const it = D.phrases.items[PH.spot]; speak(it.say || it.text); } break;
+    case 'dlg-mode': DLG[el.dataset.key] = el.dataset.mode; render(); break;
+    case 'play-all': playAll(el.dataset.key); break;
+    case 'bl-pick': BL.w = i; clearTimeout(BL.t); render(); break;
+    case 'bl-rand': BL.w = Math.floor(Math.random() * D.phonics.blend.length); clearTimeout(BL.t); render(); break;
+    case 'bl-go': blendGo(); break;
+    case 'di-show': DI.show = !DI.show; render(); break;
+    case 'vc-hide': VQ.hide = !VQ.hide; render(); break;
+    case 'vq-start': case 'vq-next': vqNew(); break;
+    case 'vq-again': { const x = vqItem(); x && speak(x.it.say || x.it.word); break; }
+    case 'vq-reveal': VQ.shown = true; render(); break;
+    case 'vq-stop': VQ.on = false; VQ.shown = false; render(); break;
+    case 'pt-pick': PT[+el.dataset.p].sel = i; render(); { const p = D.vocab.patterns[+el.dataset.p]; const o = p.options.concat(PT[+el.dataset.p].extra)[i]; speak(`${p.before} ${optSay(o)}${p.after}`); } break;
+    case 'names-shuffle': RP.names = shuffle(RP.names); render(); break;
+    case 'pad-clear': guides(); break;
+    case 'pad-trace': trace(); break;
+    case 'cd': CD.has(i) ? CD.delete(i) : CD.add(i); render(); break;
+    case 'ex': { const q = +el.dataset.q, o = +el.dataset.o; EX[q] = o; render(); if (o === D.wrapup.exit[q].answer) toast('Correct!'); break; }
+    case 'ex-reset': for (const k in EX) delete EX[k]; render(); break;
+    case 'copy-home': {
+      const txt = `${D.kicker} · ${D.title}\nHome review:\n` + D.wrapup.home.map(h => '- ' + h).join('\n');
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => toast('List copied.')).catch(() => toast('Copy was blocked. Select the list and copy it.'));
+      else toast('Copy was blocked. Select the list and copy it.');
+      break;
+    }
+  }
+}
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,select,textarea')) return;
+  if (e.key === 'Escape' && PH.spot !== null) { PH.spot = null; render(); return; }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute('role') === 'button') { e.preventDefault(); e.target.click(); return; }
+  if (PH.spot !== null) return;
+  if (e.key === 'ArrowRight' && e.altKey) go(cur + 1);
+  if (e.key === 'ArrowLeft' && e.altKey) go(cur - 1);
+});
+window.addEventListener('hashchange', () => { const i = STEPS.findIndex(s => '#' + s.id === location.hash); if (i >= 0 && i !== cur) go(i); });
+window.addEventListener('resize', () => { if (STEPS[cur].id === 'readwrite') initPad(); });
+
+/* ---------- Start ---------- */
+$('#kicker').textContent = D.kicker;
+if (D.home) { const h = $('#homelink'); h.href = D.home; h.hidden = false; }
+$('#ltitle').textContent = D.title;
+$('#goals').innerHTML = D.goals.map(g => `<li>${esc(g)}</li>`).join('');
+$('#total').textContent = `Total: ${STEPS.reduce((t, st) => t + st.min, 0)} minutes`;
+{ const i = STEPS.findIndex(s => '#' + s.id === location.hash); cur = i >= 0 ? i : 0; visited.add(cur); }
+T.left = STEPS[cur].min * 60; drawTimer(); render();
+</script>
+</body>
+</html>
