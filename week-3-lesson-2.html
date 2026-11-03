@@ -154,7 +154,7 @@ main{overflow:auto;padding:24px clamp(16px,3vw,40px) 40px;display:flex;flex-dire
 .vc .pic.long{font-size:34px;line-height:1.55}
 .fc .pic.long{font-size:clamp(64px,9vw,112px)}
 .vc .pic.digit{font-family:var(--learn);font-weight:700;color:var(--accent)}
-.vc .vw{font-family:var(--learn);font-size:24px;font-weight:700}
+.vc .vw{font-family:var(--learn);font-size:24px;font-weight:700;text-align:center;overflow-wrap:anywhere;hyphens:auto}
 .hide-words .vc .vw{visibility:hidden}
 .vc.target{border-color:var(--good);background:var(--good-soft);box-shadow:0 0 0 4px var(--good-soft)}
 .quizbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--glow-soft);border-radius:14px;padding:10px 14px;margin-bottom:14px}
@@ -255,6 +255,7 @@ const STEPS = [
   {id:'readwrite', label:'Read & write', min:8},
   {id:'wrapup', label:'Wrap-up', min:2}
 ];
+D.phrases.items = D.phrases.items.map(it => ({emoji: it.emoji ?? it.pic, text: it.text ?? it.word, say: it.say}));
 if (D.minutes) STEPS.forEach(st => { if (D.minutes[st.id]) st.min = D.minutes[st.id]; });
 const $ = (s, el=document) => el.querySelector(s);
 const $$ = (s, el=document) => [...el.querySelectorAll(s)];
@@ -397,7 +398,7 @@ const BL = {w:0, t:null};
 const DI = {show:false};
 function rPhonics(){
   const ph = D.phonics, w = ph.blend[BL.w];
-  return head(ph.title, ph.sub) + `<div class="letters">${ph.letters.map(x => `<button class="letter" data-say="${esc(x.word)}"><span class="big ${x.l.length > 1 ? 'pair' : ''}">${esc(x.up)}<span>${esc(x.l)}</span></span><span class="snd">${esc(x.sound)}</span><span class="kw"><span aria-hidden="true">${x.emoji}</span> ${esc(x.word)}</span><span class="hint">${esc(x.hint)}</span></button>`).join('')}</div>
+  return head(ph.title, ph.sub) + `<div class="letters">${ph.letters.map(x => `<button class="letter" data-say="${esc(x.word)}"><span class="big ${x.l.length > 1 ? 'pair' : ''}">${x.l.length > 2 ? '' : esc(x.up)}<span>${esc(x.l)}</span></span><span class="snd">${esc(x.sound)}</span><span class="kw"><span aria-hidden="true">${x.emoji}</span> ${esc(x.word)}</span><span class="hint">${esc(x.hint)}</span></button>`).join('')}</div>
   <div class="panel"><h2>Blend the sounds</h2>
     <div class="chips" role="group" aria-label="Choose a word">${ph.blend.map((b,i) => `<button class="chip" data-act="bl-pick" data-i="${i}" aria-pressed="${BL.w===i}">${esc(b)}</button>`).join('')}</div>
     <div class="bl-stage" aria-live="polite">${[...w].map(ch => `<span class="bl-box">${esc(ch)}</span>`).join('')}</div>

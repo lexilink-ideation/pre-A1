@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 0 Exit Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Exit test: part rail with live scores on the left, one part at a time on the right, results sheet last. Same tokens as the lessons. */
+  --paper:#F2F4F9; --card:#FFFFFF; --ink:#18213D; --muted:#566079; --line:#D6DCE9;
+  --accent:#2952E3; --accent-soft:#E5EBFD; --glow:#FFC531; --glow-soft:#FFF3CC;
+  --good:#1C9A55; --good-soft:#DFF3E7; --bad:#CF3B3B; --bad-soft:#FBE3E3;
+  --display:"Lexend", "Segoe UI", system-ui, sans-serif;
+  --learn:"Andika", "Lexend", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--display);font-size:18px;line-height:1.45}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--glow);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.app{display:grid;grid-template-columns:268px 1fr;grid-template-rows:auto 1fr;height:100%}
+header{grid-column:1/-1;display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--ink);color:#fff;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;line-height:1.2;margin-right:auto}
+.brand small{color:#AFC0F5;font-size:13px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.brand strong{font-size:20px;font-weight:600}
+.hbtn{background:transparent;border:1.5px solid #3B4770;color:#fff;border-radius:10px;padding:7px 12px;font-size:15px;font-weight:500;text-decoration:none;white-space:nowrap}
+.hbtn:hover{background:#26305A}
+.hbtn[aria-pressed="true"]{background:var(--glow);color:var(--ink);border-color:var(--glow)}
+select.hbtn option{color:var(--ink)}
+.who{display:flex;gap:8px;align-items:center}
+.who input{background:#0F1630;border:1.5px solid #3B4770;border-radius:10px;color:#fff;padding:7px 10px;font-size:15px;width:180px}
+.who input::placeholder{color:#8E9AC0}
+nav{background:var(--card);border-right:1px solid var(--line);overflow:auto;padding:16px 12px;display:flex;flex-direction:column;gap:6px}
+.part{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;border-radius:12px;padding:10px;font-size:16px}
+.part:hover{background:var(--paper)}
+.part .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--paper);border:1.5px solid var(--line);font-weight:600;font-size:14px}
+.part .sc{font-variant-numeric:tabular-nums;font-size:14px;color:var(--muted);font-weight:600}
+.part.cur{background:var(--accent-soft);font-weight:600}
+.part.cur .n{background:var(--accent);border-color:var(--accent);color:#fff}
+.part .sc.ok{color:var(--good)} .part .sc.low{color:var(--bad)}
+.navtotal{margin-top:10px;padding:12px;border-top:1px solid var(--line);font-size:15px;color:var(--muted)}
+.navtotal b{display:block;font-size:28px;color:var(--ink);font-variant-numeric:tabular-nums}
+main{overflow:auto;padding:24px clamp(16px,3vw,40px) 40px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:14px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.sec-head h1{font-size:clamp(28px,3.2vw,40px);font-weight:600;margin-top:2px}
+.sub{color:var(--muted);margin:6px 0 0;max-width:70ch}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.ghead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.ghead h2{font-size:21px;font-weight:600}
+.gscore{font-variant-numeric:tabular-nums;font-weight:600;color:var(--muted)}
+.gintro{color:var(--muted);margin:0 0 14px;font-size:16px}
+.passage{font-family:var(--learn);font-size:clamp(24px,2.6vw,32px);font-weight:700;background:var(--paper);border-radius:14px;padding:16px 20px;margin-bottom:14px;line-height:1.5}
+.item{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;padding:14px 0;border-top:1px solid var(--line);align-items:start}
+.item:first-of-type{border-top:0}
+.qn{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:600;margin-top:4px}
+.item.done .qn{background:var(--good)}
+.qbody{display:grid;gap:10px}
+.prompt{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:19px;font-weight:600}
+.prompt .big{font-family:var(--learn);font-size:clamp(26px,3vw,36px);font-weight:700}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--card);border-radius:12px;padding:8px 14px;font-weight:600;font-size:16px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.icon{padding:8px;border-radius:50%}
+.score-btn{border:2px solid var(--line);background:var(--card);border-radius:12px;padding:8px 14px;font-weight:600;font-size:15px;display:inline-flex;gap:8px;align-items:center}
+.score-btn b{font-variant-numeric:tabular-nums;font-size:18px}
+.score-btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.score-btn.yes[aria-pressed="true"]{background:var(--good);border-color:var(--good)}
+.score-btn.no[aria-pressed="true"]{background:var(--bad);border-color:var(--bad)}
+.opt{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:10px 18px;font-family:var(--learn);font-size:26px;font-weight:700;min-width:64px}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 3px var(--accent-soft)}
+.key{display:none;font-size:14px;color:var(--good);font-weight:600}
+.show-key .key{display:block}
+.tnote{display:none;background:var(--glow-soft);border:1.5px dashed #E2B12A;border-radius:14px;padding:14px 18px}
+.notes-on .tnote{display:block}
+.tnote h3{font-size:14px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.tnote ul{margin:0;padding-left:20px;display:grid;gap:4px;font-size:16px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:18px}
+th{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.num,th.num{text-align:right}
+.pill{display:inline-block;border-radius:999px;padding:3px 12px;font-size:14px;font-weight:600}
+.pill.ok{background:var(--good-soft);color:var(--good)} .pill.low{background:var(--bad-soft);color:var(--bad)} .pill.wait{background:var(--paper);color:var(--muted)}
+.verdict{display:flex;align-items:center;gap:20px;flex-wrap:wrap;border-radius:18px;padding:22px 24px;border:2px solid var(--line)}
+.verdict.ok{border-color:var(--good);background:var(--good-soft)}
+.verdict.low{border-color:var(--bad);background:var(--bad-soft)}
+.verdict .big{font-size:48px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.verdict h2{font-size:26px}
+.foot{display:flex;justify-content:space-between;gap:12px;margin-top:auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:16px;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}
+  nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:8px}
+  .part{grid-template-columns:30px auto auto;white-space:nowrap}
+  .navtotal{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <a class="hbtn" href="index.html">◀ All lessons</a>
+    <div class="brand"><small>Level 0 · Week 8 · Lesson 3</small><strong>Level 0 Exit Test</strong></div>
+    <div class="who"><label for="sname" style="font-size:14px;color:#AFC0F5">Student</label><input id="sname" placeholder="Student name" autocomplete="off"></div>
+    <button class="hbtn" data-act="slow" aria-pressed="false">Slow voice</button>
+    <select class="hbtn" id="voice" aria-label="Voice" hidden></select>
+    <button class="hbtn" data-act="key" aria-pressed="false">Answer key</button>
+    <button class="hbtn" data-act="notes" aria-pressed="false">Teacher notes</button>
+    <button class="hbtn" data-act="fs">Full screen</button>
+  </header>
+  <nav id="nav" aria-label="Test parts"></nav>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const T = {"passTotal": 70, "passRule": "To pass into Level 1: 70 out of 100 overall and at least 15 out of 25 in each part. If a part is below 15, repeat the weeks behind it for 1–2 weeks and retest only that part.", "cando": ["Introduce himself or herself", "Understand slow, simple questions about personal topics", "Buy something", "Ask where a place is", "Say he or she is sick", "Fill in a basic form"], "parts": [{"id": "A", "name": "Speaking", "pass": 15, "min": 10, "intro": "One-to-one. Ask each question slowly; press the speaker if you want the computer to ask. Small errors are fine if the answer can be understood.", "notes": ["Score 0 = no answer, 1 = a word or with help, 2 = a clear answer that can be understood.", "You may repeat a question once. Don't translate.", "For the role play, you are the shopkeeper. Use real objects or pictures and play money."], "groups": [{"title": "Questions", "intro": "Ask, listen, then score.", "items": [{"type": "rate", "prompt": "What's your name? How do you spell it?", "max": 2, "labels": [" No answer", " A word / with help", " Clear answer"], "say": "What's your name? How do you spell it?"}, {"type": "rate", "prompt": "Where are you from?", "max": 2, "labels": [" No answer", " A word / with help", " Clear answer"], "say": "Where are you from?"}, {"type": "rate", "prompt": "How old are you?", "max": 2, "labels": [" No answer", " A word / with help", " Clear answer"], "say": "How old are you?", "key": "“Sorry, that's private” is a full, correct answer."}, {"type": "rate", "prompt": "What's your phone number?", "max": 2, "labels": [" No answer", " A word / with help", " Clear answer"], "say": "What's your phone number?"}, {"type": "rate", "prompt": "Tell me about your family.", "max": 2, "labels": [" No answer", " A word / with help", " Clear answer"], "say": "Tell me about your family."}, {"type": "rate", "prompt": "What time do you get up?", "max": 2, "labels": [" No answer", " A word / with help", " Clear answer"], "say": "What time do you get up?"}, {"type": "rate", "prompt": "What food do you like?", "max": 2, "labels": [" No answer", " A word / with help", " Clear answer"], "say": "What food do you like?"}]}, {"title": "Role play: at the shop", "intro": "You are the shopkeeper. The student greets you, asks for 2 items, asks the price, pays and says goodbye.", "items": [{"type": "rate", "prompt": "Greeting", "max": 2, "labels": [" None", " Some", " Clear"]}, {"type": "rate", "prompt": "Asking for items (2 items)", "max": 3, "labels": [" None", " One item, with help", " Two items, with help", " Two items, clear"]}, {"type": "rate", "prompt": "Asking the price", "max": 2, "labels": [" None", " With help", " Clear"]}, {"type": "rate", "prompt": "Understanding the price", "max": 2, "labels": [" No", " With repetition", " Yes"]}, {"type": "rate", "prompt": "Polite closing (thank you, goodbye)", "max": 2, "labels": [" None", " Some", " Clear"]}]}]}, {"id": "B", "name": "Listening", "pass": 15, "min": 10, "intro": "Play each item twice, slowly. The student writes, points or does the action.", "notes": ["Turn on Slow voice if the student needs it. That's allowed.", "For pictures and dialogues, the student points; you click their choice."], "groups": [{"title": "Numbers", "intro": "The student writes each number as a figure on paper.", "items": [{"type": "tick", "prompt": "Number 1", "max": 1, "say": "seven", "key": "Answer: 7"}, {"type": "tick", "prompt": "Number 2", "max": 1, "say": "fifteen", "key": "Answer: 15"}, {"type": "tick", "prompt": "Number 3", "max": 1, "say": "thirty", "key": "Answer: 30"}, {"type": "tick", "prompt": "Number 4", "max": 1, "say": "sixty-two", "key": "Answer: 62"}, {"type": "tick", "prompt": "Number 5", "max": 1, "say": "one hundred", "key": "Answer: 100"}]}, {"title": "Pictures", "intro": "The student points to the picture they hear.", "items": [{"type": "choice", "prompt": "Picture 1", "options": ["🍚", "🍞", "🥛", "🍎"], "answer": 1, "max": 1, "say": "bread"}, {"type": "choice", "prompt": "Picture 2", "options": ["🧑‍🏫", "🩺", "🚗", "🧑‍🍳"], "answer": 1, "max": 1, "say": "doctor"}, {"type": "choice", "prompt": "Picture 3", "options": ["🚆", "🚕", "🚌", "🚲"], "answer": 2, "max": 1, "say": "bus"}, {"type": "choice", "prompt": "Picture 4", "options": ["👦", "👧", "👨", "👵"], "answer": 1, "max": 1, "say": "sister"}, {"type": "choice", "prompt": "Picture 5", "options": ["Mon", "Tue", "Thu", "Sun"], "answer": 1, "max": 1, "say": "Tuesday"}]}, {"title": "Instructions", "intro": "The student does the action.", "items": [{"type": "tick", "prompt": "Stand up.", "max": 1, "say": "Stand up."}, {"type": "tick", "prompt": "Open the book.", "max": 1, "say": "Open the book."}, {"type": "tick", "prompt": "Point to the door.", "max": 1, "say": "Point to the door."}, {"type": "tick", "prompt": "Give me the pen.", "max": 1, "say": "Give me the pen."}, {"type": "tick", "prompt": "Sit down.", "max": 1, "say": "Sit down."}]}, {"title": "Short dialogues", "intro": "Play the dialogue, then the student answers. 2 points each.", "items": [{"type": "choice", "prompt": "Where is the bank?", "options": ["🏦 next to 🛒", "🏦 next to 🏫", "🏦 next to 🏥"], "answer": 0, "max": 2, "say": "Excuse me, where is the bank? It's next to the supermarket."}, {"type": "choice", "prompt": "How much is it?", "options": ["$4.50", "$14.50", "$4.15"], "answer": 0, "max": 2, "say": "How much is the milk? It's four dollars fifty."}, {"type": "choice", "prompt": "What time is it?", "options": ["3:00", "3:30", "13:30"], "answer": 1, "max": 2, "say": "What time is it? It's half past three."}, {"type": "choice", "prompt": "What's wrong?", "options": ["🦷", "🗣️", "🦶"], "answer": 0, "max": 2, "say": "What's wrong? My tooth hurts."}, {"type": "choice", "prompt": "Where is she from?", "options": ["Korea", "China", "Samoa"], "answer": 2, "max": 2, "say": "Where are you from? I am from Samoa."}]}]}, {"id": "C", "name": "Reading", "pass": 15, "min": 10, "intro": "The student reads silently and points. No audio in this part except where you read the questions.", "notes": ["Do not play the words in Word to picture. That part tests reading.", "For Read aloud, a sentence is correct if it can be understood."], "groups": [{"title": "Word to picture", "intro": "The student reads the word and points to the picture.", "items": [{"type": "choice", "prompt": "cat", "options": ["🐶", "🐱", "🐟", "🐷"], "answer": 1, "max": 1, "big": true}, {"type": "choice", "prompt": "bus", "options": ["🚌", "🚕", "🚲", "🚆"], "answer": 0, "max": 1, "big": true}, {"type": "choice", "prompt": "milk", "options": ["🧃", "☕", "🥛", "💧"], "answer": 2, "max": 1, "big": true}, {"type": "choice", "prompt": "hand", "options": ["🦶", "✋", "👂", "👃"], "answer": 1, "max": 1, "big": true}, {"type": "choice", "prompt": "shop", "options": ["🏦", "🏫", "🏥", "🛒"], "answer": 3, "max": 1, "big": true}, {"type": "choice", "prompt": "pen", "options": ["🖊️", "📕", "🎒", "🪑"], "answer": 0, "max": 1, "big": true}, {"type": "choice", "prompt": "bed", "options": ["🛏️", "🚪", "🪟", "🪑"], "answer": 0, "max": 1, "big": true}, {"type": "choice", "prompt": "fish", "options": ["🍗", "🐟", "🥚", "🍞"], "answer": 1, "max": 1, "big": true}, {"type": "choice", "prompt": "sun", "options": ["🌙", "⭐", "🌞", "☂️"], "answer": 2, "max": 1, "big": true}, {"type": "choice", "prompt": "ten", "options": ["2", "6", "10", "12"], "answer": 2, "max": 1, "big": true}]}, {"title": "Read aloud", "intro": "The student reads each sentence aloud. 1 point if it can be understood.", "items": [{"type": "tick", "prompt": "My name is Ali.", "max": 1, "big": true}, {"type": "tick", "prompt": "I am from Iran.", "max": 1, "big": true}, {"type": "tick", "prompt": "I like rice.", "max": 1, "big": true}, {"type": "tick", "prompt": "This is my sister.", "max": 1, "big": true}, {"type": "tick", "prompt": "I get up at six o'clock.", "max": 1, "big": true}]}, {"title": "Short text", "intro": "The student reads the text. Ask each question; the student answers yes or no. 2 points each.", "passage": ["This is Tom.", "He is from China.", "He has two children.", "He works in a shop.", "He gets up at 6 o'clock."], "items": [{"type": "choice", "prompt": "Is Tom from China?", "options": ["Yes", "No"], "answer": 0, "max": 2, "say": "Is Tom from China?"}, {"type": "choice", "prompt": "Does Tom have three children?", "options": ["Yes", "No"], "answer": 1, "max": 2, "say": "Does Tom have three children?"}, {"type": "choice", "prompt": "Does Tom work in a shop?", "options": ["Yes", "No"], "answer": 0, "max": 2, "say": "Does Tom work in a shop?"}, {"type": "choice", "prompt": "Does Tom get up at 8 o'clock?", "options": ["Yes", "No"], "answer": 1, "max": 2, "say": "Does Tom get up at eight o'clock?"}, {"type": "choice", "prompt": "Is Tom a teacher?", "options": ["Yes", "No"], "answer": 1, "max": 2, "say": "Is Tom a teacher?"}]}]}, {"id": "D", "name": "Writing", "pass": 15, "min": 10, "intro": "The student writes on paper. Mark the paper, then enter the scores here.", "notes": ["Print or draw a simple form: First name, Family name, Country, Phone number, Age.", "About me: 1 point for meaning, 1 point for a readable sentence pattern."], "groups": [{"title": "Personal form", "intro": "2 points each for a correct, readable answer with correct spelling.", "items": [{"type": "tick", "prompt": "First name", "max": 2}, {"type": "tick", "prompt": "Family name", "max": 2}, {"type": "tick", "prompt": "Country", "max": 2}, {"type": "tick", "prompt": "Phone number", "max": 2}, {"type": "tick", "prompt": "Age (a pretend age is fine)", "max": 2}]}, {"title": "Dictation", "intro": "Play each word. The student writes it.", "items": [{"type": "tick", "prompt": "Word 1", "max": 1, "say": "cat", "key": "cat"}, {"type": "tick", "prompt": "Word 2", "max": 1, "say": "ship", "key": "ship"}, {"type": "tick", "prompt": "Word 3", "max": 1, "say": "bed", "key": "bed"}, {"type": "tick", "prompt": "Word 4", "max": 1, "say": "home", "key": "home"}, {"type": "tick", "prompt": "Word 5", "max": 1, "say": "stop", "key": "stop"}]}, {"title": "About me: 5 sentences", "intro": "Name, country, family, job or day, food they like.", "items": [{"type": "rate", "prompt": "Sentence 1: name", "max": 2, "labels": [" No", " Meaning only", " Meaning + pattern"]}, {"type": "rate", "prompt": "Sentence 2: country", "max": 2, "labels": [" No", " Meaning only", " Meaning + pattern"]}, {"type": "rate", "prompt": "Sentence 3: family", "max": 2, "labels": [" No", " Meaning only", " Meaning + pattern"]}, {"type": "rate", "prompt": "Sentence 4: job or day", "max": 2, "labels": [" No", " Meaning only", " Meaning + pattern"]}, {"type": "rate", "prompt": "Sentence 5: food", "max": 2, "labels": [" No", " Meaning only", " Meaning + pattern"]}]}]}]};
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SPK = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
+const SC = {};        // score per item key
+const CH = {};        // chosen option per choice item
+let cur = 0;          // part index; parts.length = results
+const VIEWS = T.parts.length + 1;
+
+/* speech */
+const V = {list:[], voice:null, slow:false};
+function initVoices(){
+  if (!('speechSynthesis' in window)) return;
+  const vs = speechSynthesis.getVoices().filter(v => /^en([-_]|$)/i.test(v.lang)); if (!vs.length) return;
+  V.list = vs; let saved = null; try { saved = localStorage.getItem('l0-voice'); } catch(e) {}
+  V.voice = vs.find(v => v.name === saved) || ['en-NZ','en-GB','en-AU','en-US'].map(p => vs.find(v => v.lang.replace('_','-') === p)).find(Boolean) || vs[0];
+  const sel = $('#voice'); sel.hidden = false;
+  sel.innerHTML = vs.map(v => `<option value="${esc(v.name)}" ${v === V.voice ? 'selected' : ''}>${esc(v.name.replace(/Microsoft |Google /,''))} (${esc(v.lang)})</option>`).join('');
+}
+if ('speechSynthesis' in window) { initVoices(); speechSynthesis.onvoiceschanged = initVoices; }
+$('#voice').addEventListener('change', e => { V.voice = V.list.find(v => v.name === e.target.value) || V.voice; try { localStorage.setItem('l0-voice', V.voice.name); } catch(err) {} });
+function speak(text){
+  if (!('speechSynthesis' in window)) { toast('This browser cannot play audio. Please read it aloud.'); return; }
+  speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text);
+  if (V.voice) { u.voice = V.voice; u.lang = V.voice.lang; } else u.lang = 'en-GB';
+  u.rate = V.slow ? 0.6 : 0.8; speechSynthesis.speak(u);
+}
+let tt; function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2600); }
+
+/* scoring */
+const keyOf = (p, g, i) => `${p}-${g}-${i}`;
+function groupMax(g){ return g.items.reduce((t, it) => t + it.max, 0); }
+function partMax(p){ return p.groups.reduce((t, g) => t + groupMax(g), 0); }
+function groupScore(pi, gi){ return T.parts[pi].groups[gi].items.reduce((t, it, ii) => t + (SC[keyOf(pi,gi,ii)] || 0), 0); }
+function partScore(pi){ return T.parts[pi].groups.reduce((t, g, gi) => t + groupScore(pi, gi), 0); }
+function partMarked(pi){ let n = 0, all = 0; T.parts[pi].groups.forEach((g, gi) => g.items.forEach((it, ii) => { all++; if (SC[keyOf(pi,gi,ii)] !== undefined) n++; })); return [n, all]; }
+const total = () => T.parts.reduce((t, p, pi) => t + partScore(pi), 0);
+const allMarked = () => T.parts.every((p, pi) => { const [n, a] = partMarked(pi); return n === a; });
+
+/* render */
+function renderNav(){
+  $('#nav').innerHTML = T.parts.map((p, pi) => {
+    const s = partScore(pi), [n, a] = partMarked(pi);
+    const cls = n === a ? (s >= p.pass ? 'ok' : 'low') : '';
+    return `<button class="part ${cur===pi ? 'cur' : ''}" data-act="go" data-i="${pi}" ${cur===pi ? 'aria-current="page"' : ''}><span class="n">${p.id}</span><span>${esc(p.name)}</span><span class="sc ${cls}">${s}/${partMax(p)}</span></button>`;
+  }).join('') + `<button class="part ${cur===T.parts.length ? 'cur' : ''}" data-act="go" data-i="${T.parts.length}"><span class="n">✓</span><span>Results</span><span class="sc">${total()}/100</span></button>
+  <div class="navtotal">Total<b>${total()} / 100</b>Pass: ${T.passTotal} overall and ${T.parts[0].pass} in each part</div>`;
+}
+function scoreButtons(it, k){
+  const v = SC[k];
+  if (it.type === 'tick') return `<div class="row"><button class="score-btn yes" data-act="score" data-k="${k}" data-v="${it.max}" aria-pressed="${v===it.max}">✓ Correct <b>+${it.max}</b></button><button class="score-btn no" data-act="score" data-k="${k}" data-v="0" aria-pressed="${v===0}">✗ Not correct</button></div>`;
+  const labels = it.labels || [];
+  return `<div class="row">${Array.from({length: it.max + 1}, (_, n) => `<button class="score-btn" data-act="score" data-k="${k}" data-v="${n}" aria-pressed="${v===n}"><b>${n}</b>${labels[n] ? esc(labels[n]) : ''}</button>`).join('')}</div>`;
+}
+function itemHTML(it, pi, gi, ii, num){
+  const k = keyOf(pi, gi, ii), done = SC[k] !== undefined;
+  const listen = it.say ? `<button class="btn icon" data-say="${esc(it.say)}" aria-label="Listen">${SPK}</button>` : '';
+  const prompt = it.big ? `<span class="big">${esc(it.prompt)}</span>` : esc(it.prompt);
+  let body;
+  if (it.type === 'choice') body = `<div class="row">${it.options.map((o, oi) => `<button class="opt" data-act="choose" data-k="${k}" data-o="${oi}" aria-pressed="${CH[k]===oi}">${esc(o)}</button>`).join('')}</div><span class="key">Answer: ${esc(it.options[it.answer])} · ${it.max} point${it.max>1?'s':''}</span>`;
+  else body = scoreButtons(it, k) + (it.key ? `<span class="key">${esc(it.key)}</span>` : '');
+  return `<div class="item ${done ? 'done' : ''}"><span class="qn">${num}</span><div class="qbody"><div class="prompt">${prompt}${listen}</div>${body}</div></div>`;
+}
+function renderPart(pi){
+  const p = T.parts[pi];
+  return `<div class="sec-head"><div class="eyebrow">Part ${p.id} · ${partMax(p)} points · pass mark ${p.pass} · about ${p.min} min</div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.intro)}</p></div>
+  ${p.notes ? `<aside class="tnote"><h3>Teacher notes</h3><ul>${p.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></aside>` : ''}
+  ${p.groups.map((g, gi) => { let n = 0; return `<section class="panel"><div class="ghead"><h2>${esc(g.title)}</h2><span class="gscore">${groupScore(pi, gi)} / ${groupMax(g)}</span></div>${g.intro ? `<p class="gintro">${esc(g.intro)}</p>` : ''}${g.passage ? `<div class="passage">${g.passage.map(esc).join('<br>')}</div>` : ''}
+    ${g.items.map((it, ii) => itemHTML(it, pi, gi, ii, ++n)).join('')}</section>`; }).join('')}`;
+}
+function renderResults(){
+  const t = total(), done = allMarked();
+  const partsOk = T.parts.every((p, pi) => partScore(pi) >= p.pass);
+  const pass = t >= T.passTotal && partsOk;
+  const vcls = !done ? '' : pass ? 'ok' : 'low';
+  const name = $('#sname').value.trim();
+  const msg = !done ? 'Some items are not marked yet.' : pass ? 'Ready for Level 1.' : 'Not yet. Repeat the weak parts for 1–2 weeks, then retest only those parts.';
+  return `<div class="sec-head"><div class="eyebrow">Score sheet</div><h1>Results${name ? ': ' + esc(name) : ''}</h1><p class="sub">${esc(T.passRule)}</p></div>
+  <div class="verdict ${vcls}"><span class="big">${t}<span style="font-size:22px;color:var(--muted)"> / 100</span></span><div><h2>${!done ? 'In progress' : pass ? 'Pass' : 'Not yet'}</h2><div>${esc(msg)}</div></div></div>
+  <div class="panel"><table><thead><tr><th>Part</th><th class="num">Score</th><th class="num">Pass mark</th><th>Status</th></tr></thead><tbody>
+  ${T.parts.map((p, pi) => { const s = partScore(pi), [n, a] = partMarked(pi); const st = n < a ? `<span class="pill wait">${a - n} not marked</span>` : s >= p.pass ? '<span class="pill ok">Pass</span>' : '<span class="pill low">Below pass mark</span>'; return `<tr><td>${p.id} · ${esc(p.name)}</td><td class="num">${s} / ${partMax(p)}</td><td class="num">${p.pass}</td><td>${st}</td></tr>`; }).join('')}
+  <tr><td><b>Total</b></td><td class="num"><b>${t} / 100</b></td><td class="num"><b>${T.passTotal}</b></td><td></td></tr></tbody></table></div>
+  <div class="panel"><h2 style="font-size:20px;margin-bottom:10px">Can-do check for Level 1</h2><ul style="margin:0;padding-left:22px;display:grid;gap:4px">${T.cando.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>
+  <div class="row"><button class="btn primary" data-act="copy">Copy results</button><button class="btn" data-act="reset" id="resetbtn">Clear all scores</button></div>`;
+}
+function render(){
+  renderNav();
+  const main = $('#main');
+  main.innerHTML = (cur < T.parts.length ? renderPart(cur) : renderResults()) +
+    `<div class="foot">${cur > 0 ? `<button class="btn" data-act="go" data-i="${cur-1}">◀ ${cur-1 < T.parts.length ? 'Part ' + T.parts[cur-1].id : ''}</button>` : '<span></span>'}${cur < T.parts.length ? `<button class="btn primary" data-act="go" data-i="${cur+1}">${cur+1 < T.parts.length ? 'Part ' + T.parts[cur+1].id + ' ▶' : 'Results ▶'}</button>` : '<span></span>'}</div>`;
+}
+function rerenderKeepScroll(){ const m = $('#main'), y = m.scrollTop; render(); m.scrollTop = y; }
+
+let resetArmed = false;
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-act]'), s = e.target.closest('[data-say]');
+  if (s && !a) { speak(s.dataset.say); return; }
+  if (!a) return;
+  const act = a.dataset.act;
+  if (act === 'go') { cur = +a.dataset.i; render(); $('#main').scrollTop = 0; if (location.hash !== '#' + (cur < T.parts.length ? 'part-' + T.parts[cur].id.toLowerCase() : 'results')) history.replaceState(null, '', '#' + (cur < T.parts.length ? 'part-' + T.parts[cur].id.toLowerCase() : 'results')); }
+  if (act === 'score') { const k = a.dataset.k, v = +a.dataset.v; SC[k] = SC[k] === v ? undefined : v; if (SC[k] === undefined) delete SC[k]; rerenderKeepScroll(); }
+  if (act === 'choose') { const k = a.dataset.k, o = +a.dataset.o; const [pi, gi, ii] = k.split('-').map(Number); const it = T.parts[pi].groups[gi].items[ii]; CH[k] = o; SC[k] = o === it.answer ? it.max : 0; rerenderKeepScroll(); }
+  if (act === 'slow') { V.slow = !V.slow; a.setAttribute('aria-pressed', V.slow); }
+  if (act === 'key') { const on = document.body.classList.toggle('show-key'); a.setAttribute('aria-pressed', on); }
+  if (act === 'notes') { const on = document.body.classList.toggle('notes-on'); a.setAttribute('aria-pressed', on); }
+  if (act === 'fs') { try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => toast('Full screen is blocked here. Use the browser’s full-screen key (F11).')); } catch(err) { toast('Full screen is blocked here.'); } }
+  if (act === 'copy') {
+    const name = $('#sname').value.trim() || 'Student';
+    const lines = [`Level 0 Exit Test: ${name}`, `Date: ${new Date().toLocaleDateString('en-NZ')}`].concat(T.parts.map((p, pi) => `${p.id} ${p.name}: ${partScore(pi)}/${partMax(p)} (pass ${p.pass})`));
+    const t = total(), pass = t >= T.passTotal && T.parts.every((p, pi) => partScore(pi) >= p.pass);
+    lines.push(`Total: ${t}/100`, `Result: ${allMarked() ? (pass ? 'Pass, ready for Level 1' : 'Not yet') : 'Not finished'}`);
+    if (navigator.clipboard) navigator.clipboard.writeText(lines.join('\n')).then(() => toast('Results copied.')).catch(() => toast('Copy was blocked. Select the table and copy it.'));
+    else toast('Copy was blocked. Select the table and copy it.');
+  }
+  if (act === 'reset') {
+    if (!resetArmed) { resetArmed = true; a.textContent = 'Click again to clear everything'; setTimeout(() => { resetArmed = false; const b = $('#resetbtn'); if (b) b.textContent = 'Clear all scores'; }, 3000); return; }
+    resetArmed = false; for (const k in SC) delete SC[k]; for (const k in CH) delete CH[k]; $('#sname').value = ''; render(); toast('All scores cleared.');
+  }
+});
+$('#sname').addEventListener('input', () => { if (cur === T.parts.length) rerenderKeepScroll(); });
+function fromHash(){ const h = location.hash.replace('#',''); const i = T.parts.findIndex(p => 'part-' + p.id.toLowerCase() === h); cur = h === 'results' ? T.parts.length : i >= 0 ? i : 0; }
+window.addEventListener('hashchange', () => { fromHash(); render(); });
+fromHash(); render();
+</script>
+</body>
+</html>
